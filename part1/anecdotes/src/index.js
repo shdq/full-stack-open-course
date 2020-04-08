@@ -13,6 +13,13 @@ const anecdotes = [
 const Button = ({ children, handleClick }) => (
   <button onClick={handleClick}>{children}</button>
 );
+const Title = ({ children }) => <h2>{children}</h2>;
+const Anecdote = ({ text, votes }) => (
+  <>
+    <p>{text}</p>
+    <p>It has {votes} votes</p>
+  </>
+);
 
 const App = ({ anecdotes }) => {
   const [selected, setSelected] = useState(0);
@@ -33,12 +40,24 @@ const App = ({ anecdotes }) => {
     pickRandom();
   };
 
+  // more readable
+  const mostVoted = votes.indexOf(Math.max(...votes));
+
+  // or a fancy one
+  
+  // const mostVoted = votes.reduce(
+  //   (max, cur, index, arr) => (cur > arr[max] ? (max = index) : max),
+  //   0
+  // );
+
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>It has {votes[selected]} votes</p>
+      <Title>Anecdote of the day</Title>
+      <Anecdote text={anecdotes[selected]} votes={votes[selected]} />
       <Button handleClick={upVote}>vote</Button>
       <Button handleClick={pickRandom}>next anectode</Button>
+      <Title>Anecdote with most votes</Title>
+      <Anecdote text={anecdotes[mostVoted]} votes={votes[mostVoted]} />
     </div>
   );
 };
