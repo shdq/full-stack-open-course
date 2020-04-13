@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-
-const Header2 = ({ children }) => <h2>{children}</h2>;
+import { Header1, Header2 } from "./components/Headers";
+import Contacts from "./components/Contacts";
+import ContactsForm from "./components/ContactsForm";
+import Filter from "./components/Filter";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -49,31 +51,18 @@ const App = () => {
 
   return (
     <div>
-      <h1>Phonebook</h1>
-      <div>
-        Filter contacts:{" "}
-        <input onChange={handleFiltering} value={searchQuery} />
-      </div>
+      <Header1>Phonebook</Header1>
+      <Filter queryValue={searchQuery} onFilterUpdate={handleFiltering} />
       <Header2>Add new contact</Header2>
-      <form>
-        <div>
-          name: <input onChange={handleNameChange} value={newName} />
-        </div>
-        <div>
-          number: <input onChange={handlePhoneChange} value={newPhone} />
-        </div>
-        <div>
-          <button onClick={handleSubmit} type="submit">
-            add
-          </button>
-        </div>
-      </form>
+      <ContactsForm
+        nameValue={newName}
+        onNameUpdate={handleNameChange}
+        phoneValue={newPhone}
+        onPhoneUpdate={handlePhoneChange}
+        onSubmit={handleSubmit}
+      />
       <Header2>Numbers</Header2>
-      {filteredContacts.map((person) => (
-        <div key={person.name}>
-          {person.name} {person.phone}
-        </div>
-      ))}
+      <Contacts list={filteredContacts} />
     </div>
   );
 };
