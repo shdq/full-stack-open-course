@@ -4,6 +4,8 @@ import Contacts from "./components/Contacts";
 import ContactsForm from "./components/ContactsForm";
 import Filter from "./components/Filter";
 
+import API from "./services/api";
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
@@ -12,10 +14,15 @@ const App = () => {
   const [searchQuery, setSearchQuerty] = useState("");
 
   useEffect(() => {
-    const url = "http://localhost:3001/persons";
-    fetch(url)
-      .then((response) => response.json())
-      .then((json) => setPersons(json));
+    const getContacts = async () => {
+      try {
+        const list = await API.getAll();
+        setPersons(list);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getContacts();
   }, []);
 
   const handleFiltering = (e) => {
@@ -42,9 +49,28 @@ const App = () => {
       return;
     }
 
-    setPersons([...persons, { name: newName, phone: newPhone }]);
-    setNewName("");
-    setNewPhone("");
+    const postData = {
+      name: newName,
+      number: newPhone,
+      id: persons.length + 1,
+    };
+
+    const addNewContact = async () => {
+      try {
+        const response = await API.create(postData);
+
+        setPersons([
+          ...persons,
+          { name: response.name, number: response.number, id: response.id },
+        ]);
+        setNewName("");
+        setNewPhone("");
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    addNewContact();
   };
 
   let filteredContacts = [];
