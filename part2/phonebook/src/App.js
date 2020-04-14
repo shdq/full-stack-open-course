@@ -1,20 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Header1, Header2 } from "./components/Headers";
 import Contacts from "./components/Contacts";
 import ContactsForm from "./components/ContactsForm";
 import Filter from "./components/Filter";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", phone: "040-123456" },
-    { name: "Ada Lovelace", phone: "39-44-5323523" },
-    { name: "Dan Abramov", phone: "12-43-234345" },
-    { name: "Mary Poppendieck", phone: "39-23-6423122" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
 
   const [searchQuery, setSearchQuerty] = useState("");
+
+  useEffect(() => {
+    const url = "http://localhost:3001/persons";
+    fetch(url)
+      .then((response) => response.json())
+      .then((json) => setPersons(json));
+  }, []);
 
   const handleFiltering = (e) => {
     setSearchQuerty(e.target.value);
@@ -45,9 +47,12 @@ const App = () => {
     setNewPhone("");
   };
 
-  const filteredContacts = persons.filter((person) => {
-    return person.name.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
-  });
+  let filteredContacts = [];
+  if (persons) {
+    filteredContacts = persons.filter((person) => {
+      return person.name.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
+    });
+  }
 
   return (
     <div>
