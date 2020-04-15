@@ -44,8 +44,25 @@ const App = () => {
       return;
     }
 
-    if (persons.findIndex((person) => person.name === newName) > -1) {
-      alert(`${newName} is already added to phonebook`);
+    const indexOfExistingPerson = persons.findIndex(
+      (person) => person.name === newName
+    );
+    if (indexOfExistingPerson > -1) {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the existing number?`
+        )
+      ) {
+        try {
+          const updatedContact = {
+            ...persons[indexOfExistingPerson],
+            number: newPhone,
+          };
+          updateContact(updatedContact);
+        } catch (err) {
+          console.error(err);
+        }
+      }
       return;
     }
 
@@ -75,7 +92,22 @@ const App = () => {
   const removeContact = async (id) => {
     try {
       await API.remove(id);
-      setPersons([...persons.filter((contact) => contact.id !== id)]);
+      setPersons(persons.filter((contact) => contact.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updateContact = async (contact) => {
+    try {
+      const response = await API.update(contact);
+      setPersons(
+        persons.map((contact) =>
+          contact.id === response.id ? response : contact
+        )
+      );
+      setNewName("");
+      setNewPhone("");
     } catch (err) {
       console.error(err);
     }

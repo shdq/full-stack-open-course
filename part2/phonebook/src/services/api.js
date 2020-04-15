@@ -25,6 +25,22 @@ const create = async (data) => {
   }
 };
 
+const update = async (data) => {
+  try {
+    const options = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    };
+    const response = await fetch(`${url}/${data.id}`, options);
+    return response.json();
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 const remove = async (id) => {
   try {
     const options = {
@@ -37,4 +53,4 @@ const remove = async (id) => {
   }
 };
 
-export default { getAll, create, remove };
+export default { getAll, create, update, remove };
