@@ -58,7 +58,6 @@ const App = () => {
     const addNewContact = async () => {
       try {
         const response = await API.create(postData);
-
         setPersons([
           ...persons,
           { name: response.name, number: response.number, id: response.id },
@@ -71,6 +70,15 @@ const App = () => {
     };
 
     addNewContact();
+  };
+
+  const removeContact = async (id) => {
+    try {
+      await API.remove(id);
+      setPersons([...persons.filter((contact) => contact.id !== id)]);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   let filteredContacts = [];
@@ -93,7 +101,7 @@ const App = () => {
         onSubmit={handleSubmit}
       />
       <Header2>Numbers</Header2>
-      <Contacts list={filteredContacts} />
+      <Contacts list={filteredContacts} handleRemove={removeContact} />
     </div>
   );
 };

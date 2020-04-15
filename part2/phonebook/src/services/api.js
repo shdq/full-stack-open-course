@@ -25,4 +25,16 @@ const create = async (data) => {
   }
 };
 
-export default { getAll, create };
+const remove = async (id) => {
+  try {
+    const options = {
+      method: "DELETE",
+    };
+    const response = await fetch(`${url}/${id}`, options);
+    return response.json();
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+export default { getAll, create, remove };
