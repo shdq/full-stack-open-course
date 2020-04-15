@@ -6,7 +6,8 @@ const Contacts = ({ list, handleRemove }) => {
       {contact.name} {contact.number}{" "}
       <button
         onClick={() => {
-          handleRemove(contact.id);
+          if (window.confirm(`Delete ${contact.name}`))
+            handleRemove(contact.id);
         }}
       >
         delete
