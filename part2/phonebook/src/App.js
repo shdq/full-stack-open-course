@@ -3,6 +3,7 @@ import { Header1, Header2 } from "./components/Headers";
 import Contacts from "./components/Contacts";
 import ContactsForm from "./components/ContactsForm";
 import Filter from "./components/Filter";
+import Notification from "./components/Notification";
 
 import API from "./services/api";
 
@@ -13,12 +14,30 @@ const App = () => {
 
   const [searchQuery, setSearchQuerty] = useState("");
 
+  const [notification, setNotification] = useState({
+    error: false,
+    text: "",
+  });
+
+  useEffect(() => {
+    setTimeout(() => {
+      setNotification({
+        error: false,
+        text: "",
+      });
+    }, 5000);
+  }, [notification]);
+
   useEffect(() => {
     const getContacts = async () => {
       try {
         const list = await API.getAll();
         setPersons(list);
       } catch (err) {
+        setNotification({
+          error: true,
+          text: err.message,
+        });
         console.error(err);
       }
     };
@@ -40,7 +59,10 @@ const App = () => {
     e.preventDefault();
 
     if (newName === "" || newPhone === "") {
-      alert(`Name or phone field is empty`);
+      setNotification({
+        error: true,
+        text: `Name or phone field is empty`,
+      });
       return;
     }
 
@@ -60,6 +82,10 @@ const App = () => {
           };
           updateContact(updatedContact);
         } catch (err) {
+          setNotification({
+            error: true,
+            text: err.message,
+          });
           console.error(err);
         }
       }
@@ -81,7 +107,15 @@ const App = () => {
         ]);
         setNewName("");
         setNewPhone("");
+        setNotification({
+          error: false,
+          text: `${response.name} added`,
+        });
       } catch (err) {
+        setNotification({
+          error: true,
+          text: err.message,
+        });
         console.error(err);
       }
     };
@@ -93,7 +127,15 @@ const App = () => {
     try {
       await API.remove(id);
       setPersons(persons.filter((contact) => contact.id !== id));
+      setNotification({
+        error: false,
+        text: `Contact removed`,
+      });
     } catch (err) {
+      setNotification({
+        error: true,
+        text: err.message,
+      });
       console.error(err);
     }
   };
@@ -108,7 +150,15 @@ const App = () => {
       );
       setNewName("");
       setNewPhone("");
+      setNotification({
+        error: false,
+        text: `${response.name} phone number updated`,
+      });
     } catch (err) {
+      setNotification({
+        error: true,
+        text: err.message,
+      });
       console.error(err);
     }
   };
@@ -123,6 +173,7 @@ const App = () => {
   return (
     <div>
       <Header1>Phonebook</Header1>
+      {notification.text !== "" && <Notification message={notification} />}
       <Filter queryValue={searchQuery} onFilterUpdate={handleFiltering} />
       <Header2>Add new contact</Header2>
       <ContactsForm
