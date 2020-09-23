@@ -29,7 +29,7 @@ function App() {
         <div>
           <h2>{filteredCountries[0].name}</h2>
           <p>capital: {filteredCountries[0].capital}</p>
-          <p>population: {filteredCountries[0].population}</p>
+          <p>population: {filteredCountries[0].population.toLocaleString()}</p>
           <p>
             <img
               style={{ boxShadow: "0 0 3px #000" }}
@@ -43,7 +43,7 @@ function App() {
     }
     if (filteredCountries.length <= 10) {
       filteredCountries = filteredCountries.map((country) => (
-        <li key={country.numericCode}>{country.name}</li>
+        <li key={country.numericCode}>{country.name} <button onClick={() => setQuery(country.name)}>Show</button></li>
       ));
     }
   }
