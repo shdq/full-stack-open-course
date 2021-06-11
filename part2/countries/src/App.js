@@ -6,7 +6,6 @@ function App() {
   const [data, setData] = useState([]);
   const [query, setQuery] = useState("");
   const [city, setCity] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   const [weather, setWeather] = useState([]);
 
   useEffect(() => {
@@ -18,21 +17,18 @@ function App() {
     fetchData();
   }, []);
 
-  const api_key = process.env.REACT_APP_API_KEY;
-
   useEffect(() => {
-    const fetchWeather = async () => {
+    const fetchWeather = async (city) => {
+      const api_key = process.env.REACT_APP_API_KEY;
       if (city === "") return;
       const response = await fetch(
         `http://api.weatherstack.com/current?access_key=${api_key}&query=${city}`
       );
       const result = await response.json();
-      console.log(result);
-      setWeather(result);
-      setIsLoading(false);
+      setWeather(result.current);
     };
-    setIsLoading(true);
-    fetchWeather();
+
+    fetchWeather(city);
   }, [city]);
 
   const handleChange = (e) => {
@@ -41,7 +37,6 @@ function App() {
 
   let filteredCountries;
   let details;
-  
 
   if (query) {
     filteredCountries = data.filter(
@@ -63,15 +58,13 @@ function App() {
             />
           </p>
           <h2>Weather in {capital}</h2>
-          <p>
-            {isLoading ? (
-              "Loading..."
-            ) : weather.error ? (
+          <div>
+            {weather.error ? (
               `Error while loading weather: ${weather.error.info}`
             ) : (
-              <WeatherWidget weather={weather.current} />
+              <WeatherWidget weather={weather} />
             )}
-          </p>
+          </div>
         </div>
       );
     }

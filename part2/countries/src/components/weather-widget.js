@@ -12,7 +12,7 @@ export default ({
         <strong>Wind:</strong>
         {wind_speed} mph, direction: {wind_dir}
       </p>
-      <img src={weather_icons[0]} />
+      {weather_icons && <img src={weather_icons[0]} alt="weather icon" />}
     </>
   );
 };
