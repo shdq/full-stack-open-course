@@ -1,7 +1,9 @@
 import React from "react";
 
 export default ({
-  weather: { temperature, wind_speed, wind_dir, weather_icons },
+  weather: {
+    current: { temperature, wind_speed, wind_dir, weather_icons },
+  },
 }) => {
   return (
     <>

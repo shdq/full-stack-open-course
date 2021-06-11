@@ -6,7 +6,7 @@ function App() {
   const [data, setData] = useState([]);
   const [query, setQuery] = useState("");
   const [city, setCity] = useState("");
-  const [weather, setWeather] = useState([]);
+  const [weather, setWeather] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,7 +25,7 @@ function App() {
         `http://api.weatherstack.com/current?access_key=${api_key}&query=${city}`
       );
       const result = await response.json();
-      setWeather(result.current);
+      setWeather(result);
     };
 
     fetchWeather(city);
@@ -44,6 +44,7 @@ function App() {
     );
     if (filteredCountries.length === 1) {
       const { name, capital, population, flag } = filteredCountries[0];
+      if (city !== capital) setCity(capital);
       details = (
         <div>
           <h2>{name}</h2>
@@ -62,7 +63,7 @@ function App() {
             {weather.error ? (
               `Error while loading weather: ${weather.error.info}`
             ) : (
-              <WeatherWidget weather={weather} />
+              weather && <WeatherWidget weather={weather} />
             )}
           </div>
         </div>
@@ -84,7 +85,7 @@ function App() {
       ));
     }
   }
-
+  
   return (
     <>
       find countries <input onChange={handleChange} value={query} />
